@@ -3,11 +3,22 @@
 import { useState } from 'react'
 import { Heart, Send, Loader2 } from 'lucide-react'
 
+// Type per il punto suggerito
+interface SuggestedPoint {
+  id: string
+  code: string
+  name: string
+  location_description: string
+  pressure_duration: number
+  pressure_type: string
+  technique_description: string
+}
+
 export default function Home() {
   const [query, setQuery] = useState('')
   const [response, setResponse] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [suggestedPoint, setSuggestedPoint] = useState(null)
+  const [suggestedPoint, setSuggestedPoint] = useState<SuggestedPoint | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
