@@ -1,7 +1,8 @@
 'use client'
 
 import { useState } from 'react'
-import { Heart, Send, Loader2, Sparkles, ArrowRight, MapPin, Clock, Zap } from 'lucide-react'
+import { Heart, Send, Loader2, Sparkles, ArrowRight, MapPin, Clock, Zap, Map, X } from 'lucide-react'
+import BodyMap from '@/components/BodyMap'
 
 interface SuggestedPoint {
   id: string
@@ -18,6 +19,7 @@ export default function Home() {
   const [response, setResponse] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [suggestedPoint, setSuggestedPoint] = useState<SuggestedPoint | null>(null)
+  const [showBodyMap, setShowBodyMap] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -162,6 +164,23 @@ Es: 'Ho mal di testa da questa mattina'
             </form>
           </div>
 
+          {/* Body Map Button */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 shadow-2xl border border-white/40">
+            <div className="text-center">
+              <h3 className="text-xl font-bold text-gray-800 mb-3">
+                Oppure esplora direttamente
+              </h3>
+              <button 
+                onClick={() => setShowBodyMap(true)}
+                className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-4 px-8 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+              >
+                <Map className="h-5 w-5" />
+                🗺️ Mappa del Corpo Interattiva
+                <ArrowRight className="h-5 w-5" />
+              </button>
+            </div>
+          </div>
+
           {/* Loading State */}
           {isLoading && (
             <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-12 shadow-2xl border border-white/40">
@@ -242,11 +261,19 @@ Es: 'Ho mal di testa da questa mattina'
                     </div>
                   </div>
 
-                  <button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-4 px-8 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
-                    <span>🎯</span>
-                    Inizia Sessione Guidata
-                    <ArrowRight className="h-5 w-5" />
-                  </button>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button 
+                      onClick={() => setShowBodyMap(true)}
+                      className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white py-3 px-6 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 hover:from-emerald-600 hover:to-teal-600 transition-all duration-300 shadow-lg hover:shadow-xl"
+                    >
+                      <Map className="h-5 w-5" />
+                      Vedi sulla Mappa
+                    </button>
+                    <button className="w-full bg-gradient-to-r from-blue-500 to-purple-500 text-white py-3 px-6 rounded-2xl font-semibold text-lg flex items-center justify-center gap-2 hover:from-blue-600 hover:to-purple-600 transition-all duration-300 shadow-lg hover:shadow-xl">
+                      <span>🎯</span>
+                      Inizia Sessione
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
@@ -285,6 +312,33 @@ Es: 'Ho mal di testa da questa mattina'
           </div>
         </footer>
       </div>
+
+      {/* Body Map Modal */}
+      {showBodyMap && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="relative bg-gradient-to-br from-emerald-50 to-teal-50 rounded-3xl p-6 max-w-lg w-full max-h-[90vh] overflow-y-auto">
+            <button
+              onClick={() => setShowBodyMap(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-white/50 rounded-full transition-colors z-10"
+            >
+              <X className="h-6 w-6 text-gray-600" />
+            </button>
+            
+            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">
+              🗺️ Mappa del Corpo
+            </h2>
+            
+            <BodyMap 
+              selectedPointId={suggestedPoint?.id}
+              onPointSelect={(point) => {
+                console.log('Punto selezionato:', point)
+                // Qui puoi gestire la selezione del punto
+                // setShowBodyMap(false) // Chiudi la mappa dopo selezione
+              }} 
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
